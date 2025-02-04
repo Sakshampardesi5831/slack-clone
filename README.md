@@ -13,6 +13,8 @@ pnpm dev
 # or
 bun dev
 ```
+# run a convex db 
+npx convex dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
