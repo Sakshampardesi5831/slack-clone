@@ -12,13 +12,19 @@ import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { SignInFlow } from "../types ";
+import { useAuthActions } from "@convex-dev/auth/react";
 interface SignInCardProps {
   setState: (state: SignInFlow) => void;
 }
 const SignInCard = ({ setState }: SignInCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [pending, setPending] = useState<boolean>(false);
+  const { signIn } = useAuthActions();
+  const handleProviderSignIn = (value: "github" | "google") => {
+    setPending(true);
+    signIn(value).finally(() => setPending(false));
+  };
   return (
     <Fragment>
       <Card className="w-full h-full p-8 ">
@@ -41,7 +47,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
               placeholder="Email"
             />
             <Input
-              disabled={false}
+              disabled={pending}
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -63,8 +69,8 @@ const SignInCard = ({ setState }: SignInCardProps) => {
           <Separator />
           <div className="flex flex-col gap-y-2.5">
             <Button
-              disabled={false}
-              onClick={() => {}}
+              disabled={pending}
+              onClick={() => handleProviderSignIn("google")}
               variant="outline"
               size="lg"
               className=" w-full relative"
@@ -73,8 +79,8 @@ const SignInCard = ({ setState }: SignInCardProps) => {
               with Google
             </Button>
             <Button
-              disabled={false}
-              onClick={() => {}}
+              disabled={pending}
+              onClick={() => handleProviderSignIn("github")}
               variant="outline"
               size="lg"
               className=" w-full relative"
