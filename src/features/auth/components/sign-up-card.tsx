@@ -13,6 +13,8 @@ import React, { Fragment, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { SignInFlow } from "../types ";
+import { TriangleAlert } from "lucide-react";
+import { useAuthActions } from "@convex-dev/auth/react";
 interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
 }
@@ -20,6 +22,32 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [pending, setPending] = useState<boolean>(false);
+  const [error, setError] = useState("");
+  const { signIn } = useAuthActions();
+
+  const handleProviderSignIn = (value: "github" | "google") => {
+    setPending(true);
+    signIn(value).finally(() => setPending(false));
+  };
+
+  const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setPending(true);
+    signIn("password", { email, password, flow: "signUp" })
+      .catch((e: any) => {
+        setError("Some thing went wrong");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
   return (
     <Fragment>
       <Card className="w-full h-full p-8 ">
@@ -29,10 +57,16 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
             Use your email or another service to continue
           </CardDescription>
         </CardHeader>
+        {!!error && (
+          <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive mb-6 ">
+            <TriangleAlert className="size-4" />
+            <p>{error}</p>
+          </div>
+        )}
         <CardContent className="space-y-5 px-0 pb-0">
-          <form className="space-y-2.5">
+          <form onSubmit={onPasswordSignUp} className="space-y-2.5">
             <Input
-              disabled={false}
+              disabled={pending}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -42,22 +76,22 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
               placeholder="Email"
             />
             <Input
-              disabled={false}
+              disabled={pending}
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
-              type="password"
+              //type="password"
               required
               placeholder="Password"
             />
             <Input
-              disabled={false}
+              disabled={pending}
               value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
               }}
-              type="password"
+              //type="password"
               required
               placeholder="Confirm Password"
             />
@@ -65,7 +99,7 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
               type="submit"
               className="w-full"
               size="lg"
-              disabled={false}
+              disabled={pending}
               variant="outline"
             >
               Continue
@@ -74,8 +108,8 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
           <Separator />
           <div className="flex flex-col gap-y-2.5">
             <Button
-              disabled={false}
-              onClick={() => {}}
+              disabled={pending}
+              onClick={() => handleProviderSignIn("google")}
               variant="outline"
               size="lg"
               className=" w-full relative"
@@ -84,8 +118,8 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
               with Google
             </Button>
             <Button
-              disabled={false}
-              onClick={() => {}}
+              disabled={pending}
+              onClick={() => handleProviderSignIn("github")}
               variant="outline"
               size="lg"
               className=" w-full relative"
