@@ -5,7 +5,7 @@ import { userGetWorkSpacesById } from "@/features/workspaces/api/use-getById-wor
 const WorkSpaceIdPage = () => {
   const workspaceId = useWorkSpaceId();
   const { data } = userGetWorkSpacesById({ id: workspaceId });
-  return <div> {JSON.stringify(data)} WorkSpaceIdPage</div>;
+  return <div> WorkSpaceIdPage</div>;
 };
 
 export default WorkSpaceIdPage;

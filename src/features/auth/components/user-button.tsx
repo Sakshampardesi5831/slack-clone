@@ -15,7 +15,6 @@ import { useAuthActions } from "@convex-dev/auth/react";
 const UserButton = () => {
   const { data, isLoading } = useCurrentUser();
   const {signOut} =useAuthActions()
-  console.log(data);
   if (isLoading) {
     return (
       <Fragment>
