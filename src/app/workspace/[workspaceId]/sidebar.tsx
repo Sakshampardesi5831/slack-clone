@@ -14,7 +14,9 @@ const SideBar = () => {
   const pathname = usePathname();
   return (
     <aside className="w-[70px] h-full bg-[#481349] flex flex-col gap-y-4 pt-[9px] pb-4">
-      <WorkSpaceSwitcher />
+      <div className="flex justify-center items-center">
+        <WorkSpaceSwitcher />
+      </div>
       <SideBarButton
         icon={Home}
         label="Home"
